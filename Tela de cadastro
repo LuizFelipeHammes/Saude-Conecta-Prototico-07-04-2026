@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saúde Conecta | Criar Conta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --primary-green: #10b981;
+            --gradient: linear-gradient(135deg, #1e40af 0%, #10b981 100%);
+            --bg-dark: #020617;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Moldura do iPhone */
+        .iphone-frame {
+            width: 375px;
+            height: 812px;
+            background: #ffffff;
+            position: relative;
+            border-radius: 50px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 0 12px #1e293b, 0 30px 100px rgba(0,0,0,0.9);
+            animation: phoneEntrance 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes phoneEntrance {
+            from { opacity: 0; transform: translateY(50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Fundo Animado */
+        .bg-glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: #fff;
+        }
+
+        .blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(30, 64, 175, 0.15) 0%, transparent 70%);
+            filter: blur(40px);
+            bottom: -50px;
+            right: -50px;
+            animation: move 15s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(10%, 10%); }
+            to { transform: translate(-20%, -30%); }
+        }
+
+        /* Topo menor para caber mais campos */
+        .header {
+            background: var(--gradient);
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            z-index: 2;
+            border-bottom-left-radius: 60px;
+        }
+
+        .logo-box-small {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 10px;
+        }
+
+        /* Conteúdo */
+        .content {
+            padding: 30px 25px;
+            z-index: 2;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Permite rolar se a tela for pequena */
+        }
+
+        h1 {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-left: 5px;
+        }
+
+        .input-box {
+            position: relative;
+            margin-top: 5px;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+            font-size: 0.9rem;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px 12px 12px 42px;
+            border-radius: 12px;
+            border: 2px solid #f1f5f9;
+            background: #f8fafc;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .input-box input:focus {
+            border-color: var(--primary-green);
+            background: #fff;
+        }
+
+        /* Botões */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 15px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-main {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 8px 15px rgba(30, 64, 175, 0.2);
+        }
+
+        .btn-text {
+            background: transparent;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+
+        .btn-text span {
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .home-indicator {
+            width: 140px;
+            height: 5px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin: 20px auto 10px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="iphone-frame">
+        <div class="bg-glow">
+            <div class="blob"></div>
+        </div>
+
+        <div class="header">
+            <div class="logo-box-small">
+                <i class="fa-solid fa-user-plus fa-2x"></i>
+            </div>
+            <h2 style="letter-spacing: 2px; font-size: 0.8rem; opacity: 0.9;">CADASTRO ÚNICO</h2>
+        </div>
+
+        <div class="content">
+            <h1>Crie sua conta</h1>
+
+            <div class="input-group">
+                <label>Nome Completo</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" placeholder="Ex: João Silva">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Seu CPF</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-address-card"></i>
+                    <input type="text" placeholder="000.000.000-00" maxlength="14">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>E-mail</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" placeholder="nome@exemplo.com">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Crie uma Senha</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" placeholder="Mínimo 8 caracteres">
+                </div>
+            </div>
+
+            <button class="btn btn-main">
+                Finalizar Cadastro
+                <i class="fa-solid fa-check-circle"></i>
+            </button>
+
+            <div style="flex-grow: 1;"></div>
+
+            <button class="btn btn-text" onclick="window.history.back()">
+                Já possui uma conta? <span>Fazer Login</span>
+            </button>
+            
+            <div class="home-indicator"></div>
+        </div>
+    </div>
+
+</body>
+</html>

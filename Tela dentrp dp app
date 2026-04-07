@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saúde Conecta - Agendamento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #1e40af;
+            --primary-green: #10b981;
+            --gradient: linear-gradient(135deg, #1e40af 0%, #10b981 100%);
+            --bg-dark: #020617;
+            --card-white: #ffffff;
+            --text-gray: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+
+        .phone-frame {
+            width: 360px; height: 740px; background: #f1f5f9;
+            border: 10px solid #1e293b; border-radius: 40px;
+            position: relative; overflow: hidden; display: flex;
+            flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        header {
+            background: var(--gradient); padding: 40px 20px 20px;
+            color: white; text-align: center; border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px; z-index: 5;
+        }
+
+        .content { flex: 1; overflow-y: auto; padding: 20px; }
+        .content::-webkit-scrollbar { display: none; }
+
+        /* --- ESTILOS AGENDAMENTO --- */
+        .hospital-card { background: var(--card-white); border-radius: 20px; padding: 15px; margin-bottom: 25px; }
+        .hospital-name { font-weight: 800; font-size: 1.1rem; color: #0f172a; }
+        .hospital-location { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 15px; }
+        .doctor-item { display: flex; align-items: center; padding: 10px 0; border-top: 1px solid #f1f5f9; }
+        .doctor-avatar { width: 45px; height: 45px; background: #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 12px; color: var(--primary-blue); }
+        .doctor-info h4 { font-size: 0.9rem; }
+        .doctor-info p { font-size: 0.75rem; color: var(--primary-green); font-weight: 600; }
+        .btn-book { margin-left: auto; background: var(--primary-blue); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+
+        /* --- ESTILOS PERFIL --- */
+        #profile-page { display: none; }
+        .profile-header { text-align: center; padding-top: 20px; }
+        .profile-img { width: 100px; height: 100px; border-radius: 30px; background: var(--gradient); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .profile-card { background: white; border-radius: 20px; padding: 20px; margin-top: 20px; }
+        .info-row { margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-size: 0.7rem; color: var(--text-gray); font-weight: 600; text-transform: uppercase; }
+        .info-value { font-size: 0.95rem; color: #0f172a; font-weight: 700; }
+
+        /* --- MODAL E TOAST --- */
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 10; }
+        .time-picker { position: absolute; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; padding: 30px 20px; z-index: 11; transition: bottom 0.4s ease; }
+        .time-picker.active { bottom: 0; }
+        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
+        .time-slot { padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 12px; text-align: center; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+        
+        .success-toast { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); background: rgba(15, 23, 42, 0.95); color: white; padding: 20px 30px; border-radius: 20px; text-align: center; z-index: 100; opacity: 0; visibility: hidden; transition: 0.3s; width: 80%; }
+        .success-toast.show { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .success-toast i { font-size: 2.5rem; color: var(--primary-green); margin-bottom: 10px; display: block; }
+
+        .nav-bar { height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; }
+        .nav-bar i { font-size: 1.2rem; color: var(--text-gray); cursor: pointer; transition: 0.2s; }
+        .nav-bar i.active { color: var(--primary-blue); }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="success-toast" id="successToast">
+            <i class="fas fa-check-circle"></i>
+            <p style="font-weight: 800;">Concluído!</p>
+            <p style="font-size: 0.8rem; opacity: 0.8;">Seu agendamento foi realizado com sucesso.</p>
+        </div>
+
+        <header id="main-header">
+            <h1 id="header-title">Agendamento</h1>
+            <p id="header-subtitle">Selecione um profissional</p>
+        </header>
+
+        <!-- TELA DE AGENDAMENTO -->
+        <div class="content" id="agenda-page">
+            <div class="hospital-card">
+                <div class="hospital-name">Hospital Santa Luzia</div>
+                <div class="hospital-location"><i class="fas fa-map-marker-alt"></i> Centro</div>
+                <div class="doctor-item">
+                    <div class="doctor-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="doctor-info"><h4>Dr. André Martins</h4><p>Cardiologia</p></div>
+                    <button class="btn-book" onclick="openBooking('Dr. André Martins')">Agendar</button>
+                </div>
+                <div class="doctor-item">
+                    <div class="doctor-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="doctor-info"><h4>Dra. Carla Menezes</h4><p>Neurologia</p></div>
+                    <button class="btn-book" onclick="openBooking('Dra. Carla Menezes')">Agendar</button>
+                </div>
+            </div>
+            <div class="hospital-card">
+                <div class="hospital-name">Clínica Vitalle</div>
+                <div class="hospital-location"><i class="fas fa-map-marker-alt"></i> Jd. América</div>
+                <div class="doctor-item">
+                    <div class="doctor-avatar"><i class="fas fa-user-md"></i></div>
+                    <div class="doctor-info"><h4>Dr. Ricardo Alves</h4><p>Ortopedia</p></div>
+                    <button class="btn-book" onclick="openBooking('Dr. Ricardo Alves')">Agendar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA DE PERFIL -->
+        <div class="content" id="profile-page">
+            <div class="profile-header">
+                <div class="profile-img"><i class="fas fa-user"></i></div>
+                <h2 style="color: #0f172a;">João Silva</h2>
+                <p style="color: var(--text-gray); font-size: 0.8rem;">Paciente desde Jan 2024</p>
+            </div>
+            <div class="profile-card">
+                <div class="info-row">
+                    <div class="info-label">E-mail</div>
+                    <div class="info-value">joao.silva@email.com</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Telefone</div>
+                    <div class="info-value">(11) 98765-4321</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Plano de Saúde</div>
+                    <div class="info-value">Unimed Pleno</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal-overlay" id="overlay" onclick="closeBooking()"></div>
+        <div class="time-picker" id="timePicker">
+            <h3 id="modalDocName" style="font-size: 1rem; color: var(--primary-blue); margin-bottom: 5px;">Agenda</h3>
+            <div class="time-grid">
+                <div class="time-slot" onclick="confirmTime()">09:00</div>
+                <div class="time-slot" onclick="confirmTime()">10:30</div>
+                <div class="time-slot" onclick="confirmTime()">13:00</div>
+                <div class="time-slot" onclick="confirmTime()">15:00</div>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <i class="fas fa-calendar-alt active" id="nav-agenda" onclick="showTab('agenda')"></i>
+            <i class="fas fa-user" id="nav-profile" onclick="showTab('profile')"></i>
+        </nav>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            const agendaPage = document.getElementById('agenda-page');
+            const profilePage = document.getElementById('profile-page');
+            const navAgenda = document.getElementById('nav-agenda');
+            const navProfile = document.getElementById('nav-profile');
+            const hTitle = document.getElementById('header-title');
+            const hSub = document.getElementById('header-subtitle');
+
+            if(tab === 'agenda') {
+                agendaPage.style.display = 'block';
+                profilePage.style.display = 'none';
+                navAgenda.classList.add('active');
+                navProfile.classList.remove('active');
+                hTitle.innerText = "Agendamento";
+                hSub.innerText = "Selecione um profissional";
+            } else {
+                agendaPage.style.display = 'none';
+                profilePage.style.display = 'block';
+                navAgenda.classList.remove('active');
+                navProfile.classList.add('active');
+                hTitle.innerText = "Meu Perfil";
+                hSub.innerText = "Dados da conta";
+            }
+        }
+
+        function openBooking(doctor) {
+            document.getElementById('modalDocName').innerText = "Agenda: " + doctor;
+            document.getElementById('overlay').style.display = 'block';
+            setTimeout(() => document.getElementById('timePicker').classList.add('active'), 10);
+        }
+
+        function closeBooking() {
+            document.getElementById('timePicker').classList.remove('active');
+            setTimeout(() => document.getElementById('overlay').style.display = 'none', 400);
+        }
+
+        function confirmTime() {
+            closeBooking();
+            setTimeout(() => {
+                const toast = document.getElementById('successToast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
